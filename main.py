@@ -2,7 +2,7 @@ import pygame
 import sys
 from src.configs import CONFIG
 from src.engine import MultiStateSmoothLife
-from src.visualization import Visualizer
+from src.visualization import Visualizer, VideoRecorder
 
 def main():
     pygame.init()
@@ -12,6 +12,7 @@ def main():
     
     sim = MultiStateSmoothLife(width, height, states)
     viz = Visualizer(width, height, scale, states)
+    recorder = VideoRecorder(width * scale, height * scale, CONFIG["target_fps"])
     clock = pygame.time.Clock()
     
     running = True
@@ -63,6 +64,19 @@ def main():
                 elif event.key == pygame.K_EQUALS:
                     frame_skip = min(32, frame_skip + 1)
                     print(f"Frame Skip: {frame_skip}")
+                elif event.key == pygame.K_z:
+                    sim.total_mass = sim.total_mass * 2 ** (0.125 if fine else 0.5)
+                    print(f"Total Mass: {sim.total_mass}")
+                elif event.key == pygame.K_x:
+                    sim.total_mass = sim.total_mass / 2 ** (0.125 if fine else 0.5)
+                    print(f"Total Mass: {sim.total_mass}")
+                elif event.key == pygame.K_q:
+                    if recorder.is_recording:
+                        recorder.stop()
+                    else:
+                        recorder.start()
+                elif event.key == pygame.K_l:
+                    viz.cycle_mode()
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_LSHIFT or event.key == pygame.K_RSHIFT:
                     fine = False
@@ -71,9 +85,19 @@ def main():
             viz.handle_mouse_drawing(sim)
 
         sim.run(frame_skip, dt, viscosity)
-        viz.render(sim.rho)
+        viz.render(sim.rho, sim.v)
+        recorder.write_frame(viz.screen)
+        
+        # Update title
+        rec_status = "🔴 REC" if recorder.is_recording else "⚪ IDLE"
+        mode_name = viz.MODE_NAMES[viz.render_mode]
+        title = f"Liquenia | {mode_name} | {rec_status} | FPS: {clock.get_fps():.1f} | DT: {dt:.4f} | Visc: {viscosity:.4f} | Skip: {frame_skip}"
+        pygame.display.set_caption(title)
+        
         clock.tick(CONFIG["target_fps"])
 
+    if recorder.is_recording:
+        recorder.stop()
     pygame.quit()
     sys.exit()
 

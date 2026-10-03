@@ -1,24 +1,9 @@
-<p align="center">
-  <img src="assets/logo.svg" width="150" alt="SmoothLife Logo">
-</p>
 
-# Multi-State Smooth Particle Life (CuPy Optimized)
+# Liquenia (Multi-State Smooth Life)
 
-A high-performance implementation of Smooth Life with multiple interacting states, accelerated by CUDA via CuPy. This version is optimized for numerical stability, high precision (`float64`), and modularity.
-
-<p align="center">
-  <img src="assets/diagram.svg" width="100%" alt="Simulation Pipeline">
-</p>
-
-## Precision and Stability
-This project has been optimized for numerical stability and math precision:
-- **High Precision**: Built natively with `float64` support to minimize floating-point drift.
-- **Stable Activations**: Sigmoids and state transition functions are clamped and protected with modern stability safeguards (epsilons, clipping).
-- **Mass Conservation**: Employs a normalization step to ensure total density remains constant across simulation steps.
-- **Isotropic Laplacian**: Uses a 9-point stencil for more natural diffusion.
+Implementation of **Smooth Life** with multiple interacting states, accelerated by CUDA via CuPy.
 
 ## Project Structure
-The code is organized into modular components for better maintainability:
 - `main.py`: Entry point and application loop.
 - `src/engine.py`: Core simulation logic and state management.
 - `src/math_utils.py`: CUDA-accelerated math kernels.
@@ -42,7 +27,6 @@ The code is organized into modular components for better maintainability:
    ```
 
 ## Usage
-Activate the environment and run the main script:
 ```bash
 source venv/bin/activate
 python main.py
@@ -52,15 +36,12 @@ python main.py
 - `R`: Randomize interaction matrices.
 - `B`: Reset the board with random densities.
 - `C`: Clear the board.
+- `Z`: Increase total mass.
+- `X`: Decrease total mass.
+- `L`: Cycle through render modes.
+- `Q`: Record/Stop recording.
 - `UP/DOWN`: Increase/Decrease time step (`dt`).
 - `LEFT/RIGHT`: Increase/Decrease `viscosity`.
 - `+/-`: Increase/Decrease `frame_skip`.
 - `SHIFT`: Fine-tune parameter changes.
 - `Mouse Click`: Draw density on the board.
-
-## Testing
-To run the automated conservation and precision tests:
-```bash
-export PYTHONPATH=.
-python tests/test_conservation.py
-```
