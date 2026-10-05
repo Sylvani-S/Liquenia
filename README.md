@@ -43,5 +43,6 @@ python main.py
 - `UP/DOWN`: Increase/Decrease time step (`dt`).
 - `LEFT/RIGHT`: Increase/Decrease `viscosity`.
 - `+/-`: Increase/Decrease `frame_skip`.
+- `T`: Cycle tile grid decomposition (4x4 -> 8x8 -> 16x16).
 - `SHIFT`: Fine-tune parameter changes.
 - `Mouse Click`: Draw density on the board.
